@@ -1,0 +1,40 @@
+pipeline {
+    agent any
+    tools {
+        maven 'maven'
+    }
+    stages {
+        stage('Checkout') {
+            steps {
+                echo 'Checking out code...'
+                checkout scm
+            }
+        }
+        stage('Build') {
+            steps {
+                dir('college_event_management_website') {
+                    sh 'mvn clean compile'
+                }
+            }
+        }
+        stage('Test') {
+            steps {
+                dir('college_event_management_website') {
+                    sh 'mvn test'
+                }
+            }
+        }
+        stage('Package') {
+            steps {
+                dir('college_event_management_website') {
+                    sh 'mvn package -DskipTests'
+                }
+            }
+        }
+    }
+    post {
+        success {
+            echo 'Build successful!'
+        }
+    }
+}
